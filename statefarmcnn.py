@@ -30,29 +30,21 @@ import random
 # the test images are pathed as 'imgs/test/img_45.jpg'
 
 def load_dataset():
-    # trainingset = []
-    # traininglabels = []
-    # with open('data/driver_imgs_list.csv') as imglabels:
-    #     labels = imglabels.readlines()[1:]
-    #     random.shuffle(labels)
-    #     for label in labels:
-    #         # Convert scale from integers [0, 255] to floats [0,1]
-    #         colorimage = np.asarray(Image.open("data/imgs/train/"+label[5:7]+"/"+label[8:].rstrip("\n")))/np.float32(256)
-    #         greyimage = np.empty((colorimage.shape[0], colorimage.shape[1]))  # init 2D numpy array
-    #         for rownum in range(len(colorimage)):
-    #             for colnum in range(len(colorimage[rownum])):
-    #                 greyimage[rownum][colnum] = np.mean(colorimage[rownum][colnum])
-    #         trainingset.append(greyimage)
-    #         temp = np.zeros(10)
-    #         temp[int(label[6:7])] = 1
-    #         traininglabels.append(temp)
+    with open('data/driver_imgs_list.csv') as imglabels:
+        labels = imglabels.readlines()[1:10] # the first line in metadata
+        x_train = np.empty((len(labels), 1, 640, 480))
+        y_train = np.zeros((len(labels), 1, 640, 480))
+        random.shuffle(labels)
+        for index, label in enumerate(labels):
+            # Convert scale from integers [0, 255] to floats [0,1]
+            x = np.asarray(Image.open("data/imgs/train/"+label[5:7]+"/"+label[8:].rstrip("\n")))/np.float16(255)
+            x_train[index][0] = x
+            y_train[index][int(label[6:7])] = 1.
 
-    x_train = np.load("training")
-    y_train = np.array(traininglabels)
     # 10% of the test set will be the validation set.
     vsize = int(len(y_train) * .1)
 
-    # We reserve the last 10000 training examples for validation.
+    # Reserve 10% of data set for validation and 10% for testing.
     x_train, x_val, x_test = x_train[:-2 * vsize], x_train[-2 * vsize:-vsize], x_train[-vsize:]
     y_train, y_val, y_test = y_train[:-2 * vsize], y_train[-2 * vsize:-vsize], y_train[-vsize:]
 
