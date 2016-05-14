@@ -31,13 +31,13 @@ import random
 
 def load_dataset():
     with open('data/driver_imgs_list.csv') as imglabels:
-        labels = imglabels.readlines()[1:10] # the first line in metadata
-        x_train = np.empty((len(labels), 1, 640, 480))
-        y_train = np.zeros((len(labels), 1, 640, 480))
+        labels = imglabels.readlines()[1:1000] # the first line in metadata
+        x_train = np.empty((len(labels), 1, 480, 640))
+        y_train = np.zeros((len(labels), 10))
         random.shuffle(labels)
         for index, label in enumerate(labels):
             # Convert scale from integers [0, 255] to floats [0,1]
-            x = np.asarray(Image.open("data/imgs/train/"+label[5:7]+"/"+label[8:].rstrip("\n")))/np.float16(255)
+            x = np.asarray(Image.open("data/train/"+label[5:7]+"/"+label[8:].rstrip("\n")))/np.float32(255)
             x_train[index][0] = x
             y_train[index][int(label[6:7])] = 1.
 
