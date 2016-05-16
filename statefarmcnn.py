@@ -31,13 +31,13 @@ import random
 
 def load_dataset():
     with open('data/driver_imgs_list.csv') as imglabels:
-        labels = imglabels.readlines()[1:1000] # the first line in metadata
+        labels = imglabels.readlines()[1:1000]  # the first line in metadata
         x_train = np.empty((len(labels), 1, 480, 640))
         y_train = np.zeros((len(labels), 10))
         random.shuffle(labels)
         for index, label in enumerate(labels):
             # Convert scale from integers [0, 255] to floats [0,1]
-            x = np.asarray(Image.open("data/train/"+label[5:7]+"/"+label[8:].rstrip("\n")))/np.float32(255)
+            x = np.asarray(Image.open("data/imgs/train/"+label[5:7]+"/"+label[8:].rstrip("\n")))/np.float32(255)
             x_train[index][0] = x
             y_train[index][int(label[6:7])] = 1.
 
@@ -183,7 +183,7 @@ def main(num_epochs=500):
         train_batches = 0
         start_time = time.time()
         countervar = 0
-        for batch in iterate_minibatches(x_train, y_train, 500, shuffle=True):
+        for batch in iterate_minibatches(x_train, y_train, 50, shuffle=True):
             print(countervar)
             countervar += 1
             inputs, targets = batch
@@ -194,7 +194,7 @@ def main(num_epochs=500):
         val_err = 0
         val_acc = 0
         val_batches = 0
-        for batch in iterate_minibatches(x_val, y_val, 500, shuffle=False):
+        for batch in iterate_minibatches(x_val, y_val, 50, shuffle=False):
             inputs, targets = batch
             err, acc = val_fn(inputs, targets)
             val_err += err
@@ -202,12 +202,10 @@ def main(num_epochs=500):
             val_batches += 1
 
         # Then we print the results for this epoch:
-        print("Epoch {} of {} took {:.3f}s".format(
-            epoch + 1, num_epochs, time.time() - start_time))
+        print("Epoch {} of {} took {:.3f}s".format(epoch + 1, num_epochs, time.time() - start_time))
         print("  training loss:\t\t{:.6f}".format(train_err / train_batches))
         print("  validation loss:\t\t{:.6f}".format(val_err / val_batches))
-        print("  validation accuracy:\t\t{:.2f} %".format(
-            val_acc / val_batches * 100))
+        print("  validation accuracy:\t\t{:.2f} %".format(val_acc / val_batches * 100))
 
     # After training, we compute and print the test error:
     test_err = 0
@@ -245,4 +243,4 @@ def main(num_epochs=500):
 
 
 if __name__ == '__main__':
-    main(5)
+    main(1)
