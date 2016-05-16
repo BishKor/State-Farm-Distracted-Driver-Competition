@@ -136,7 +136,7 @@ def main(num_epochs=500):
 
     # Prepare Theano variables for inputs and targets
     input_var = T.tensor4('inputs')
-    target_var = T.ivector('targets')
+    target_var = T.dmatrix('targets')
 
     # Create neural network model (depending on first command line parameter)
     print("Building model and compiling functions...")
@@ -182,7 +182,10 @@ def main(num_epochs=500):
         train_err = 0
         train_batches = 0
         start_time = time.time()
+        countervar = 0
         for batch in iterate_minibatches(x_train, y_train, 500, shuffle=True):
+            print(countervar)
+            countervar += 1
             inputs, targets = batch
             train_err += train_fn(inputs, targets)
             train_batches += 1
@@ -210,7 +213,7 @@ def main(num_epochs=500):
     test_err = 0
     test_acc = 0
     test_batches = 0
-    for batch in iterate_minibatches(x_test, y_test, 500, shuffle=False):
+    for batch in iterate_minibatches(x_test, y_test, 10, shuffle=False):
         inputs, targets = batch
         err, acc = val_fn(inputs, targets)
         test_err += err
